@@ -41,7 +41,7 @@ int main() {
                 return 1;
             }
 
-            if (i > j) {
+            if (i != j) {
                 matrice[i][j] = 0;
             }
         }
