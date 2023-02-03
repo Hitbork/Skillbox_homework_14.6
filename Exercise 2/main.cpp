@@ -17,17 +17,16 @@ void show_field(char field[][3]) {
 // Function to define if there is a winner
 bool did_it_win(char field[][3]) {
     if (    // Conditions for rows
-            ((field[0][0] == field[0][1]) && (field[0][1] == field[0][2]) && (field[0][0] == field[0][2])) ||
-            ((field[1][0] == field[1][1]) && (field[1][1] == field[1][2]) && (field[1][0] == field[1][2])) ||
-            ((field[2][0] == field[2][1]) && (field[2][1] == field[2][2]) && (field[2][0] == field[2][2])) ||
+            (field[0][0] != ' ' &&(field[0][0] == field[0][1]) && (field[0][1] == field[0][2]) && (field[0][0] == field[0][2])) ||
+            (field[1][0] != ' ' &&(field[1][0] == field[1][1]) && (field[1][1] == field[1][2]) && (field[1][0] == field[1][2])) ||
+            (field[2][0] != ' ' &&(field[2][0] == field[2][1]) && (field[2][1] == field[2][2]) && (field[2][0] == field[2][2])) ||
             // Conditions for columns
-            ((field[0][0] == field[1][0]) && (field[0][0] == field[2][0]) && (field[1][0] == field[2][0])) ||
-            ((field[0][1] == field[1][1]) && (field[0][1] == field[2][1]) && (field[1][1] == field[2][1])) ||
-            ((field[0][2] == field[1][2]) && (field[0][2] == field[2][2]) && (field[1][2] == field[2][2])) ||
+            (field[0][0] != ' ' && (field[0][0] == field[1][0]) && (field[0][0] == field[2][0]) && (field[1][0] == field[2][0])) ||
+            (field[0][1] != ' ' && (field[0][1] == field[1][1]) && (field[0][1] == field[2][1]) && (field[1][1] == field[2][1])) ||
+            (field[0][2] != ' ' && (field[0][2] == field[1][2]) && (field[0][2] == field[2][2]) && (field[1][2] == field[2][2])) ||
             // Conditions for diagonals
-            ((field[0][0] == field[1][1]) && (field[0][0] == field[2][2]) && (field[1][1] == field[2][2])) ||
-            ((field[0][2] == field[1][1]) && (field[1][1] == field[2][0]) && (field[0][2] == field[2][0]))) {
-        // Условие что field[i][j] != ' '
+            (field[0][0] != ' ' && (field[0][0] == field[1][1]) && (field[0][0] == field[2][2]) && (field[1][1] == field[2][2])) ||
+            (field[0][2] != ' ' && (field[0][2] == field[1][1]) && (field[1][1] == field[2][0]) && (field[0][2] == field[2][0]))) {
         return true;
     }
 
