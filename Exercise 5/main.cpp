@@ -22,6 +22,9 @@ int main() {
 
 
     //
-    int counter = 0;
+    int counter = 0, x1, x2, y1, y2;
+    while (counter < 144) {
 
+        crack(pimples, counter, x1, y1, x2, y2);
+    }
 }
