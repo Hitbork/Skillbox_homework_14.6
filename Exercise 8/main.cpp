@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-#include <vector>
 
 
 // Function to fill empty fields
@@ -8,6 +7,74 @@ void fill_empty_field(bool field[][10]) {
     for (int i = 0; i < 10; i++) {
         for (int j = 0; j < 10; j++) {
             field[i][j] = false;
+        }
+    }
+}
+
+
+// Function to check if there is no ships nearby
+bool no_nearby_ships(bool field[][10], int &x, int &y) {
+    int i = 0, j = 0, imax = 0, jmax = 0;
+
+    if (x == 0) {
+        i = x;
+    } else {
+        i = x - 1;
+    }
+
+    if (x == 9) {
+        imax = x;
+    } else {
+        imax = x + 1;
+    }
+
+    if (y == 0) {
+        j = y;
+    } else {
+        j = y - 1;
+    }
+
+    if (y == 9) {
+        jmax = y;
+    } else {
+        jmax = y + 1;
+    }
+
+    for (i; i <= imax; i++) {
+        for (j; j <= jmax; j++) {
+            if (!((i == x) &&
+                    (y == j)) &&
+                    (field[i][j])) {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+
+// Function to check if there is no ships nearby
+bool no_nearby_ships(bool field[][10], int &x1, int &y1, int &x2, int &y2) {
+    int i = 0, j = 0, imax = 0, jmax = 0;
+
+    if ((x1 == 0) || (x2 == 0)) {
+        i = 0;
+    } else {
+        if (x2 > x1) {
+            i = x1 + 1;
+        } else {
+            i = x2 + 1;
+        }
+    }
+
+    if ((y1 == 0) || (y2 == 0)) {
+        j = 0;
+    } else {
+        if (y2 > y1) {
+            j = y1 - 1;
+        } else {
+            j = y2 - 1;
         }
     }
 }
@@ -151,7 +218,8 @@ void input_ships_1_cell(bool field[][10]) {
         std::cin >> x >> y;
         std::cout << "\n";
 
-        if (!are_coordinates_right(field, x, y)) {
+        if ((!are_coordinates_right(field, x, y)) ||
+            (!no_nearby_ships(field, x, y))) {
             std::cout << "Coordinates are wrong.\n";
             std::cout << "Try again!\n\n";
             continue;
