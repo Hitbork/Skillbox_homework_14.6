@@ -28,6 +28,16 @@ bool are_coordinates_right(bool field[][10], int &x, int &y) {
 }
 
 
+// Function to check if coordinates of shot are right
+bool are_coordinates_of_shot_right(int &x, int &y) {
+    if ((x < 0 || x > 9) ||
+        (y < 0 || y > 9)) {
+        return false;
+    }
+
+    return true;
+}
+
 // Function to check if line is empty for new ship (axis vertical)
 bool are_fields_empty_for_ship_axis_vertical(bool field[][10], int &x1, int &y, int &x2) {
     for (int i = x1; i <= x2; i++) {
@@ -103,11 +113,39 @@ void correct_input_of_ships(bool field[][10], int &x1, int &y1, int &x2, int &y2
 }
 
 
+// Function to output field of player
+void output_field_of_player(bool field[][10]) {
+    std::cout << "Your field:\n";
+    std::cout << "  ";
+
+    for (int i = 0; i < 10; i++) {
+        std::cout << i << " ";
+    }
+    std::cout << "Ys\n";
+
+    for (int i = 0; i < 10; i++) {
+        std::cout << i << " ";
+        for (int j = 0; j < 10; j++) {
+            if (!field[i][j]) {
+                std::cout << ".";
+            } else {
+                std::cout << "X";
+            }
+
+            std::cout << " ";
+        }
+        std::cout << "\n";
+    }
+
+    std::cout << "Xs\n\n\n";
+}
+
 // Function to input ships on 1 cell on the field
 void input_ships_1_cell(bool field[][10]) {
     int x, y, counter = 0;
 
     while (counter < 4) {
+        output_field_of_player(field);
         std::cout << "Input coordinates of " << counter+1 << " ship on 1 cell:\n";
         std::cout << "[x] [y]\n";
         std::cin >> x >> y;
@@ -130,6 +168,7 @@ void input_ships_2_cells(bool field[][10]) {
     int x1, y1, x2, y2, counter = 0;
 
     while (counter < 3) {
+        output_field_of_player(field);
         std::cout << "Input coordinates of " << counter+1 << " ship on 2 cells:\n";
         std::cout << "[x1] [y1] [x2] [y2]\n";
         std::cin >> x1 >> y1 >> x2 >> y2;
@@ -141,7 +180,7 @@ void input_ships_2_cells(bool field[][10]) {
             continue;
         }
 
-        correct_input_of_ships(field, x1, y2, x2, y2);
+        correct_input_of_ships(field, x1, y1, x2, y2);
         counter++;
     }
 }
@@ -152,6 +191,7 @@ void input_ships_3_cells(bool field[][10]) {
     int x1, y1, x2, y2, counter = 0;
 
     while (counter < 2) {
+        output_field_of_player(field);
         std::cout << "Input coordinates of " << counter+1 << " ship on 3 cells:\n";
         std::cout << "[x1] [y1] [x2] [y2]\n";
         std::cin >> x1 >> y1 >> x2 >> y2;
@@ -163,7 +203,7 @@ void input_ships_3_cells(bool field[][10]) {
             continue;
         }
 
-        correct_input_of_ships(field, x1, y2, x2, y2);
+        correct_input_of_ships(field, x1, y1, x2, y2);
         counter++;
     }
 }
@@ -175,6 +215,7 @@ void input_ship_4_cells(bool field[][10]) {
     bool input_correct = false;
 
     while (!input_correct) {
+        output_field_of_player(field);
         std::cout << "Input coordinates of ship on 4 cells:\n";
         std::cout << "[x1] [y1] [x2] [y2]\n";
         std::cin >> x1 >> y1 >> x2 >> y2;
@@ -186,7 +227,7 @@ void input_ship_4_cells(bool field[][10]) {
             continue;
         }
 
-        correct_input_of_ships(field, x1, y2, x2, y2);
+        correct_input_of_ships(field, x1, y1, x2, y2);
         input_correct = true;
     }
 }
@@ -208,31 +249,65 @@ void fill_fields_with_ships(bool field[][10]) {
 }
 
 
+// Function to output field of hits
+void output_field_of_hits(int field_of_hits[][10]) {
+    std::cout << "Field of enemy:\n";
+    std::cout << "  ";
+
+    for (int i = 0; i < 10; i++) {
+        std::cout << i << " ";
+    }
+    std::cout << "Ys\n";
+
+    for (int i = 0; i < 10; i++) {
+        std::cout << i << " ";
+        for (int j = 0; j < 10; j++) {
+            if (field_of_hits[i][j] == 0) {
+                std::cout << ".";
+            } else if (field_of_hits[i][j] == 1) {
+                std::cout << "o";
+            } else {
+                std::cout << "X";
+            }
+
+            std::cout << " ";
+        }
+        std::cout << "\n";
+    }
+
+
+    std::cout << "Xs\n\n\n";
+}
+
+
 // Function of player move
-bool move_of_player(bool enemy_field[][10], int &hits_of_player, std::string player) {
+bool move_of_player(bool enemy_field[][10], int field_of_hits[][10], int &hits_of_player, std::string player) {
     bool didPlayerHit = true;
     int x, y;
 
     while ((didPlayerHit) && (hits_of_player < 20)) {
+        output_field_of_hits(field_of_hits);
         std::cout << player << " insert coordinates of next shot:\n";
         std::cout << "[x] [y]\n";
         std::cin >> x >> y;
         std::cout << "\n";
 
-        if (!are_coordinates_right(enemy_field, x, y)) {
+        if (!are_coordinates_of_shot_right(x, y)) {
             std::cout << "Wrong coordinates!\n";
             std::cout << "Try again!\n\n";
             continue;
         }
 
         if (enemy_field[x][y]) {
-            std::cout << "Ship hitted!\n";
+            std::cout << "Ship hitted!\n\n";
             hits_of_player++;
             enemy_field[x][y] = false;
+            field_of_hits[x][y] = 2;
             continue;
         }
 
         std::cout << "Ship wasn't hitted.\n";
+        field_of_hits[x][y] = 1;
         std::cout << "Move of next player...\n\n";
         didPlayerHit = false;
     }
@@ -243,21 +318,35 @@ bool move_of_player(bool enemy_field[][10], int &hits_of_player, std::string pla
 }
 
 
+// Function to fill field of hits
+void fill_field_of_hits(int field_of_hits[][10]) {
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 10; j++) {
+            field_of_hits[i][j] = 0;
+        }
+    }
+}
+
+
 // Function to play game
 std::string play_game(bool field_1[][10], bool field_2[][10]) {
     int hits_of_player1 = 0, hits_of_player2 = 0;
     bool didSomebodyWon = false;
 
+    int field_of_hits_player1[10][10], field_of_hits_player2[10][10];
+    fill_field_of_hits(field_of_hits_player1);
+    fill_field_of_hits(field_of_hits_player2);
+
     std::cout << "Game has started!\n\n";
 
     while (!didSomebodyWon) {
         std::cout << "Move of player 1!\n";
-        didSomebodyWon = move_of_player(field_2, hits_of_player1, "Player 1");
+        didSomebodyWon = move_of_player(field_2, field_of_hits_player1, hits_of_player1, "Player 1");
 
         if (didSomebodyWon) break;
 
         std::cout << "Move of player 2!\n";
-        didSomebodyWon = move_of_player(field_1,hits_of_player2, "Player 2");
+        didSomebodyWon = move_of_player(field_1, field_of_hits_player2, hits_of_player2, "Player 2");
     }
 
     if (hits_of_player1 == 20) {
