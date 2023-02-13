@@ -14,12 +14,12 @@ void fill_empty_field(bool field[][10]) {
 
 // Function to check if there is no ships nearby
 bool no_nearby_ships(bool field[][10], int &x, int &y) {
-    int i = 0, j = 0, imax = 0, jmax = 0;
+    int imin = 0, jmin = 0, imax = 0, jmax = 0;
 
     if (x == 0) {
-        i = x;
+        imin = x;
     } else {
-        i = x - 1;
+        imin = x - 1;
     }
 
     if (x == 9) {
@@ -29,9 +29,9 @@ bool no_nearby_ships(bool field[][10], int &x, int &y) {
     }
 
     if (y == 0) {
-        j = y;
+        jmin = y;
     } else {
-        j = y - 1;
+        jmin = y - 1;
     }
 
     if (y == 9) {
@@ -40,8 +40,8 @@ bool no_nearby_ships(bool field[][10], int &x, int &y) {
         jmax = y + 1;
     }
 
-    for (i; i <= imax; i++) {
-        for (j; j <= jmax; j++) {
+    for (int i = imin; i <= imax; i++) {
+        for (int j = jmin; j <= jmax; j++) {
             if (!((i == x) &&
                     (y == j)) &&
                     (field[i][j])) {
@@ -56,27 +56,94 @@ bool no_nearby_ships(bool field[][10], int &x, int &y) {
 
 // Function to check if there is no ships nearby
 bool no_nearby_ships(bool field[][10], int &x1, int &y1, int &x2, int &y2) {
-    int i = 0, j = 0, imax = 0, jmax = 0;
+    int imin = 0, jmin = 0, imax = 0, jmax = 0;
+    int xmin = 0, xmax = 0, ymin = 0, ymax = 0;
+
+    bool verticalAxis = false, horizontalAxis = false;
 
     if ((x1 == 0) || (x2 == 0)) {
-        i = 0;
+        imin = 0;
     } else {
         if (x2 > x1) {
-            i = x1 + 1;
+            imin = x1 - 1;
         } else {
-            i = x2 + 1;
+            imin = x2 - 1;
         }
     }
 
     if ((y1 == 0) || (y2 == 0)) {
-        j = 0;
+        jmin = 0;
     } else {
         if (y2 > y1) {
-            j = y1 - 1;
+            jmin = y1 - 1;
         } else {
-            j = y2 - 1;
+            jmin = y2 - 1;
         }
     }
+
+    if ((x1 == 9) || (x2 == 9)) {
+        imax = 9;
+    } else {
+        if (x2 > x1) {
+            imax = x2 + 1;
+        } else {
+            imax = x1 + 1;
+        }
+    }
+
+    if ((y1 == 9) || (y2 == 9)) {
+        jmax = 9;
+    } else {
+        if (y2 > y1) {
+            jmax = y2 + 1;
+        } else {
+            jmax = y1 + 1;
+        }
+    }
+
+    if (abs(x1 - x2) > 0) {
+        verticalAxis = true;
+
+        if (x1 - x2 > 0) {
+            xmax = x1;
+            xmin = x2;
+        } else {
+            xmax = x2;
+            xmin = x1;
+        }
+    } else {
+        horizontalAxis = true;
+
+        if (y1 - y2 > 0) {
+            ymax = y1;
+            ymin = y2;
+        } else {
+            ymax = y2;
+            ymin = y1;
+        }
+    }
+
+    for (int i = imin; i <= imax; i++) {
+        for (int j = jmin; j <= jmax; j++) {
+            if (verticalAxis) {
+                if (!(((i >= xmin) && (i <= xmax)) &&
+                      (y1 == j)) &&
+                    (field[i][j])) {
+                    return false;
+                }
+            } else if (horizontalAxis) {
+                if (!(((j >= ymin) &&
+                        (j <= ymax)) &&
+                        (x1 == i)) &&
+                        (field[i][j])) {
+                    return false;
+                }
+            }
+
+        }
+    }
+
+    return true;
 }
 
 
@@ -220,7 +287,7 @@ void input_ships_1_cell(bool field[][10]) {
         std::cout << "\n";
 
         if ((!are_coordinates_right(field, x, y)) ||
-            (!no_nearby_ships(field, x, y))) {
+                (!no_nearby_ships(field, x, y))) {
             std::cout << "Coordinates are wrong.\n";
             std::cout << "Try again!\n\n";
             continue;
@@ -243,7 +310,8 @@ void input_ships_2_cells(bool field[][10]) {
         std::cin >> x1 >> y1 >> x2 >> y2;
         std::cout << "\n";
 
-        if (!are_coordinates_right(field, x1, y1, x2, y2, 2)) {
+        if ((!are_coordinates_right(field, x1, y1, x2, y2, 2)) ||
+                (!no_nearby_ships(field, x1, y1, x2, y2))) {
             std::cout << "Coordinates are wrong.\n";
             std::cout << "Try again!\n\n";
             continue;
@@ -266,7 +334,8 @@ void input_ships_3_cells(bool field[][10]) {
         std::cin >> x1 >> y1 >> x2 >> y2;
         std::cout << "\n";
 
-        if (!are_coordinates_right(field, x1, y1, x2, y2, 3)) {
+        if ((!are_coordinates_right(field, x1, y1, x2, y2, 3)) ||
+                (!no_nearby_ships(field, x1, y1, x2, y2))) {
             std::cout << "Coordinates are wrong.\n";
             std::cout << "Try again!\n\n";
             continue;
@@ -290,13 +359,15 @@ void input_ship_4_cells(bool field[][10]) {
         std::cin >> x1 >> y1 >> x2 >> y2;
         std::cout << "\n";
 
-        if (!are_coordinates_right(field, x1, y1, x2, y2, 4)) {
+        if ((!are_coordinates_right(field, x1, y1, x2, y2, 4)) ||
+                (!no_nearby_ships(field, x1, y1, x2, y2))) {
             std::cout << "Coordinates are wrong.\n";
             std::cout << "Try again!\n\n";
             continue;
         }
 
         correct_input_of_ships(field, x1, y1, x2, y2);
+        output_field_of_player(field);
         input_correct = true;
     }
 }
