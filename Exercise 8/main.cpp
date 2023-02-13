@@ -80,6 +80,7 @@ bool no_nearby_ships(bool field[][10], int &x1, int &y1, int &x2, int &y2) {
 }
 
 
+
 // Function to check if current coordinates are right
 bool are_coordinates_right(bool field[][10], int &x, int &y) {
     if ((x < 0 || x > 9) ||
