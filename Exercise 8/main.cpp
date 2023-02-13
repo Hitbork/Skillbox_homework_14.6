@@ -146,6 +146,14 @@ bool no_nearby_ships(bool field[][10], int &x1, int &y1, int &x2, int &y2) {
     return true;
 }
 
+// Function to check if you didn't hit the same position twice
+bool didnt_hit_twice(int field_of_hits[][10], int &x, int &y) {
+    if (field_of_hits[x][y] != 0) {
+        return false;
+    }
+
+    return true;
+}
 
 
 // Function to check if current coordinates are right
@@ -432,7 +440,8 @@ bool move_of_player(bool enemy_field[][10], int field_of_hits[][10], int &hits_o
         std::cin >> x >> y;
         std::cout << "\n";
 
-        if (!are_coordinates_of_shot_right(x, y)) {
+        if ((!are_coordinates_of_shot_right(x, y)) ||
+                (!didnt_hit_twice(field_of_hits, x, y))) {
             std::cout << "Wrong coordinates!\n";
             std::cout << "Try again!\n\n";
             continue;
