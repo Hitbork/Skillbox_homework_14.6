@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 
 // Function to fill empty fields
@@ -207,6 +208,66 @@ void fill_fields_with_ships(bool field[][10]) {
 }
 
 
+// Function of player move
+bool move_of_player(bool enemy_field[][10], int &hits_of_player, std::string player) {
+    bool didPlayerHit = true;
+    int x, y;
+
+    while ((didPlayerHit) && (hits_of_player < 20)) {
+        std::cout << player << " insert coordinates of next shot:\n";
+        std::cout << "[x] [y]\n";
+        std::cin >> x >> y;
+        std::cout << "\n";
+
+        if (!are_coordinates_right(enemy_field, x, y)) {
+            std::cout << "Wrong coordinates!\n";
+            std::cout << "Try again!\n\n";
+            continue;
+        }
+
+        if (enemy_field[x][y]) {
+            std::cout << "Ship hitted!\n";
+            hits_of_player++;
+            enemy_field[x][y] = false;
+            continue;
+        }
+
+        std::cout << "Ship wasn't hitted.\n";
+        std::cout << "Move of next player...\n\n";
+        didPlayerHit = false;
+    }
+
+    if (hits_of_player < 20) return false;
+
+    return true;
+}
+
+
+// Function to play game
+std::string play_game(bool field_1[][10], bool field_2[][10]) {
+    int hits_of_player1 = 0, hits_of_player2 = 0;
+    bool didSomebodyWon = false;
+
+    std::cout << "Game has started!\n\n";
+
+    while (!didSomebodyWon) {
+        std::cout << "Move of player 1!\n";
+        didSomebodyWon = move_of_player(field_2, hits_of_player1, "Player 1");
+
+        if (didSomebodyWon) break;
+
+        std::cout << "Move of player 2!\n";
+        didSomebodyWon = move_of_player(field_1,hits_of_player2, "Player 2");
+    }
+
+    if (hits_of_player1 == 20) {
+        return "Player 1";
+    }
+
+    return "Player 2";
+}
+
+
 int main() {
     // Greetings
     std::cout << "\nSea battle 0.5\n\n\n";
@@ -229,6 +290,11 @@ int main() {
     fill_fields_with_ships(field_2);
 
 
+    // Game started
+    std::string winner = play_game(field_1, field_2);
 
 
+    // End of the game
+    std::cout << "We have a winner!\n";
+    std::cout << "Winner is " << winner << "\n";
 }
